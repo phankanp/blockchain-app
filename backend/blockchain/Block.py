@@ -1,13 +1,14 @@
 import time
 
 from backend.util.generate_hash import generate_hash
+from backend.util.hex_to_binary import hex_to_binary
 from backend.constants import MINE_RATE, DIFFICULTY
 
 GENESIS_DATA = {
     'index': 0,
     'timestamp': 1,
     'previous_hash': 'genesis_last_hash',
-    'hash': 'genesis_hash',
+    'hash': generate_hash(0, 1, 'genesis_last_hash', [], DIFFICULTY, 'genesis_nonce'),
     'data': [],
     'difficulty': DIFFICULTY,
     'nonce': 'genesis_nonce'
@@ -39,18 +40,18 @@ class Block:
         """
         index = previous_block.index + 1
         timestamp = time.time_ns()
-        last_hash = previous_block.hash
+        previous_hash = previous_block.hash
         difficulty = Block.adjust_difficulty(previous_block, timestamp)
         nonce = 0
-        hash = generate_hash(index, timestamp, last_hash, data, difficulty, nonce)
+        hash = generate_hash(index, timestamp, previous_hash, data, difficulty, nonce)
 
-        while not hash.startswith('0' * difficulty):
+        while not hex_to_binary(hash).startswith('0' * difficulty):
             nonce += 1
             timestamp = time.time_ns()
             difficulty = Block.adjust_difficulty(previous_block, timestamp)
-            hash = generate_hash(index, timestamp, last_hash, data, difficulty, nonce)
+            hash = generate_hash(index, timestamp, previous_hash, data, difficulty, nonce)
 
-        return Block(index, timestamp, last_hash, hash, data, difficulty, nonce)
+        return Block(index, timestamp, previous_hash, hash, data, difficulty, nonce)
 
     @staticmethod
     def adjust_difficulty(last_block, timestamp):
