@@ -1,4 +1,4 @@
-from Block import Block
+from backend.blockchain.Block import Block
 
 
 class Blockchain:
@@ -16,13 +16,12 @@ class Blockchain:
     def add_block(self, data):
         """
         Add block to chain list
-        :param data: Data to be stored in block
         """
         self.chain.append(Block.mine_block(self.chain[-1], data))
 
     def __repr__(self):
         """
-        :return: String representation of Blockchain object
+        Return string representation of Blockchain object
         """
         return f'Blockchain: {self.chain}'
 
