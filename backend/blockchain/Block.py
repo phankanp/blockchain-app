@@ -1,8 +1,8 @@
 import time
 
+from backend.constants import MINE_RATE, DIFFICULTY
 from backend.util.generate_hash import generate_hash
 from backend.util.hex_to_binary import hex_to_binary
-from backend.constants import MINE_RATE, DIFFICULTY
 
 GENESIS_DATA = {
     'index': 0,
@@ -43,24 +43,34 @@ class Block:
         previous_hash = previous_block.hash
         difficulty = Block.adjust_difficulty(previous_block, timestamp)
         nonce = 0
-        hash = generate_hash(index, timestamp, previous_hash, data, difficulty, nonce)
 
-        while not hex_to_binary(hash).startswith('0' * difficulty):
-            nonce += 1
-            timestamp = time.time_ns()
-            difficulty = Block.adjust_difficulty(previous_block, timestamp)
-            hash = generate_hash(index, timestamp, previous_hash, data, difficulty, nonce)
+        mined_block = Block(index, timestamp, previous_hash, '', data, difficulty, nonce)
+        hash = Block.proof_of_work(previous_block, mined_block)
+        mined_block.hash = hash
 
-        return Block(index, timestamp, previous_hash, hash, data, difficulty, nonce)
+        return mined_block
 
     @staticmethod
-    def adjust_difficulty(last_block, timestamp):
+    def proof_of_work(previous_block, block):
+
+        hash = generate_hash(block)
+
+        while not hex_to_binary(hash).startswith('0' * block.difficulty):
+            block.nonce += 1
+            block.timestamp = time.time_ns()
+            block.difficulty = Block.adjust_difficulty(previous_block, block.timestamp)
+            hash = generate_hash(block)
+
+        return hash
+
+    @staticmethod
+    def adjust_difficulty(previous_block, timestamp):
         """
         Utility function to adjust difficulty
         """
-        difficulty = last_block.difficulty
+        difficulty = previous_block.difficulty
 
-        if last_block.timestamp + MINE_RATE > timestamp:
+        if previous_block.timestamp + MINE_RATE > timestamp:
             difficulty += 1
         else:
             difficulty -= 1
