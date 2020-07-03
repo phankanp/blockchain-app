@@ -8,7 +8,7 @@ GENESIS_DATA = {
     'index': 0,
     'timestamp': 1,
     'previous_hash': 'genesis_last_hash',
-    'hash': generate_hash(0, 1, 'genesis_last_hash', [], DIFFICULTY, 'genesis_nonce'),
+    'hash': 'genesis_hash',
     'data': [],
     'difficulty': DIFFICULTY,
     'nonce': 'genesis_nonce'
@@ -52,7 +52,9 @@ class Block:
 
     @staticmethod
     def proof_of_work(previous_block, block):
-
+        """
+        Continuously generates a new hash using different nonce values until hash meets difficulty requirements
+        """
         hash = generate_hash(block)
 
         while not hex_to_binary(hash).startswith('0' * block.difficulty):
@@ -62,6 +64,23 @@ class Block:
             hash = generate_hash(block)
 
         return hash
+
+    @staticmethod
+    def is_valid_proof(block, block_hash):
+        """
+        Checks if block hash is valid and meets difficulty requirements
+        """
+        validate_block = Block(
+            block.index,
+            block.timestamp,
+            block.previous_hash,
+            '',
+            block.data,
+            block.difficulty,
+            block.nonce)
+
+        return hex_to_binary(block_hash).startswith('0' * block.difficulty) and block_hash == generate_hash(
+            validate_block)
 
     @staticmethod
     def adjust_difficulty(previous_block, timestamp):
