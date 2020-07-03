@@ -1,16 +1,10 @@
 import hashlib
+import json
 
 
-def generate_hash(*args):
+def generate_hash(block):
     """
-    :param args: Arguments used for generating hash
-    :return: Return sha256 hash
+    Generate hexa hash from block object properties
     """
-    list_args = []
-
-    for arg in args:
-        list_args.append(str(arg))
-
-    string_args = ''.join(sorted(list_args))
-
-    return hashlib.sha256(string_args.encode('utf-8')).hexdigest()
+    block_string = json.dumps(block.__dict__, sort_keys=True)
+    return hashlib.sha256(block_string.encode()).hexdigest()
