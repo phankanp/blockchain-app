@@ -118,6 +118,11 @@ class Block:
             f'nonce: {self.nonce})'
         )
 
+    def to_json(self):
+        """
+        Serialize blockchain into dictionary
+        """
+        return self.__dict__
 
 def main():
     genesis_block = Block.generate_genesis()

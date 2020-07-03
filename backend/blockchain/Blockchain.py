@@ -1,5 +1,5 @@
 from backend.blockchain.Block import Block
-
+import json
 
 class Blockchain:
     """
@@ -24,6 +24,12 @@ class Blockchain:
         Return string representation of Blockchain object
         """
         return f'Blockchain: {self.chain}'
+
+    def to_json(self):
+        """
+        Serialize blockchain into list of blocks
+        """
+        return list(map(lambda block: block.to_json(), self.chain))
 
     @staticmethod
     def is_valid_chain(chain):
@@ -51,6 +57,7 @@ class Blockchain:
             raise Exception('Incoming chain is invalid')
 
         self.chain = chain
+
 
 def main(self):
     pass

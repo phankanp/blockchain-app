@@ -1,5 +1,5 @@
-from backend.blockchain.Blockchain import Blockchain
 from backend.blockchain.Block import GENESIS_DATA
+from backend.blockchain.Blockchain import Blockchain
 
 
 def test_blockchain_instance():

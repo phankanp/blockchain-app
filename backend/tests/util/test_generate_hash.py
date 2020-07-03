@@ -1,5 +1,5 @@
-from backend.util.generate_hash import generate_hash
 from backend.blockchain.Block import Block
+from backend.util.generate_hash import generate_hash
 
 
 def test_generate_hash():
