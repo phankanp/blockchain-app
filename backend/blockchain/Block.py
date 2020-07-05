@@ -1,4 +1,6 @@
+import json
 import time
+
 
 from backend.constants import MINE_RATE, DIFFICULTY
 from backend.util.generate_hash import generate_hash
@@ -44,7 +46,8 @@ class Block:
         difficulty = Block.adjust_difficulty(previous_block, timestamp)
         nonce = 0
 
-        mined_block = Block(index, timestamp, previous_hash, '', data, difficulty, nonce)
+        mined_block = Block(index, timestamp, previous_hash,
+                            '', data, difficulty, nonce)
         hash = Block.proof_of_work(previous_block, mined_block)
         mined_block.hash = hash
 
@@ -60,7 +63,8 @@ class Block:
         while not hex_to_binary(hash).startswith('0' * block.difficulty):
             block.nonce += 1
             block.timestamp = time.time_ns()
-            block.difficulty = Block.adjust_difficulty(previous_block, block.timestamp)
+            block.difficulty = Block.adjust_difficulty(
+                previous_block, block.timestamp)
             hash = generate_hash(block)
 
         return hash
@@ -109,9 +113,9 @@ class Block:
         """
         return (
             'Block('
-            f'timestamp: {self.index}, '
+            f'index: {self.index}, '
             f'timestamp: {self.timestamp}, '
-            f'last_hash: {self.previous_hash}, '
+            f'previous_hash: {self.previous_hash}, '
             f'hash: {self.hash}, '
             f'data: {self.data},'
             f'difficulty: {self.difficulty}, '
@@ -123,6 +127,22 @@ class Block:
         Serialize blockchain into dictionary
         """
         return self.__dict__
+
+    @staticmethod
+    def from_json(block_json):
+        """
+        Deserialize json into a block instance.
+        """
+        block_dict = {}
+
+        for k, v in block_json.items():
+            block_dict[k] = v
+
+        return Block(**block_dict)
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
 
 def main():
     genesis_block = Block.generate_genesis()
