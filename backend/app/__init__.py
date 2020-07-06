@@ -2,6 +2,7 @@ import os
 import random
 
 import requests
+from decouple import config
 from flask import Flask, jsonify, request, make_response
 from pusher import Pusher
 
@@ -12,17 +13,18 @@ from backend.wallet.transaction_pool import TransactionPool
 from backend.wallet.wallet import Wallet
 
 app = Flask(__name__)
-blockchain = Blockchain()
-wallet = Wallet()
-transaction_pool = TransactionPool()
 
 pusher = Pusher(
-    app_id="1030757",
-    key="946520f9393b1be332a1",
-    secret="92cd1926b0c512469bd2",
+    app_id=config('APP_ID'),
+    key=config('KEY'),
+    secret=config('SECRET'),
     cluster="us3",
     ssl=True
 )
+
+blockchain = Blockchain()
+wallet = Wallet()
+transaction_pool = TransactionPool()
 
 
 @app.route('/')
