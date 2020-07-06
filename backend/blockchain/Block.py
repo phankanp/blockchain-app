@@ -1,8 +1,6 @@
-import json
 import time
 
-
-from backend.constants import MINE_RATE, DIFFICULTY
+from backend.config import MINE_RATE, DIFFICULTY
 from backend.util.generate_hash import generate_hash
 from backend.util.hex_to_binary import hex_to_binary
 

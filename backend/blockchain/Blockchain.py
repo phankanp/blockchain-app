@@ -1,5 +1,4 @@
 from backend.blockchain.Block import Block
-import json
 
 
 class Blockchain:
@@ -63,7 +62,7 @@ class Blockchain:
 
         for i in range(1, len(chain)):
             block = chain[i]
-            previous_block = chain[i-1]
+            previous_block = chain[i - 1]
             if block.previous_hash != previous_block.hash or not Block.is_valid_proof(block, block.hash):
                 return False
 

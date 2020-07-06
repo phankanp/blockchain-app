@@ -1,13 +1,12 @@
-from hashlib import new
 import os
 import random
-import requests
 
+import requests
 from flask import Flask, jsonify, request, make_response
 from pusher import Pusher
 
-from backend.blockchain.Blockchain import Blockchain
 from backend.blockchain.Block import Block
+from backend.blockchain.Blockchain import Blockchain
 
 app = Flask(__name__)
 blockchain = Blockchain()
@@ -79,6 +78,5 @@ if os.environ.get('PEER') == 'True':
         print('Synchronized the local blockchain')
     except Exception as e:
         print(f'Synchronization error: {e}')
-
 
 app.run(port=PORT)
