@@ -4,7 +4,8 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
 
 from backend.config import INITIAL_BALANCE
-from backend.util.chain_util import ChainUtil
+from backend.util.wallet_util import WalletUtil
+from backend.wallet.transaction import Transaction
 
 
 class Wallet:
@@ -14,8 +15,8 @@ class Wallet:
 
     def __init__(self):
         self.balance = INITIAL_BALANCE
-        self.key_pair = ChainUtil.generate_keypair()
-        self.public_key = ChainUtil.serialize_public_key(self.key_pair.public_key())
+        self.key_pair = WalletUtil.generate_keypair()
+        self.public_key = WalletUtil.serialize_public_key(self.key_pair.public_key())
 
     def __repr__(self):
         """
@@ -36,7 +37,29 @@ class Wallet:
             ec.ECDSA(hashes.SHA256())
         )
 
+    def create_transaction(self, blockchain, amount, recipient, transaction_pool):
+        """
+        Creates or updates a transaction
+        """
+        self.balance = self.calculate_balance(blockchain)
+
+        if amount > self.balance:
+            raise Exception(f'{amount} exceeds current balance: {self.balance}')
+
+        transaction = transaction_pool.existing_transaction(self.public_key)
+
+        if transaction:
+            transaction.update(self, recipient, amount)
+        else:
+            transaction = Transaction.new_transaction(self, recipient, amount)
+            transaction_pool.add_transaction(transaction)
+
+        return transaction
+
     def calculate_balance(self, blockchain):
+        """
+        Updates wallet balance with the latest transaction
+        """
         balance = self.balance
 
         transactions = []

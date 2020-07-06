@@ -7,10 +7,13 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 
 
-class ChainUtil:
+class WalletUtil:
 
     @staticmethod
     def generate_keypair():
+        """
+        Generates private key using provided cryptography standard and backend
+        """
         return ec.generate_private_key(
             ec.SECP256K1(),
             default_backend()
@@ -18,6 +21,9 @@ class ChainUtil:
 
     @staticmethod
     def serialize_public_key(public_key):
+        """
+        Serializes public key
+        """
         return public_key.public_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo
@@ -25,6 +31,9 @@ class ChainUtil:
 
     @staticmethod
     def deserialize_public_key(public_key):
+        """
+        Deserializes public key
+        """
         deserialized_public_key = serialization.load_pem_public_key(
             public_key.encode('utf-8'),
             default_backend()
@@ -34,10 +43,16 @@ class ChainUtil:
 
     @staticmethod
     def id():
-        return uuid
+        """
+        Generates unique id for transactions
+        """
+        return str(uuid.uuid4())
 
     @staticmethod
     def verify_signature(public_key, signature, data):
+        """
+        Verifies transaction signature
+        """
         try:
             public_key.verify(
                 signature,

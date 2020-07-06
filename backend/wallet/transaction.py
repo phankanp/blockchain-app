@@ -1,18 +1,18 @@
 import time
 
 from backend.config import MINING_REWARD, MINING_REWARD_INPUT
-from backend.util.chain_util import ChainUtil
+from backend.util.wallet_util import WalletUtil
 
 
 class Transaction:
 
     def __init__(self):
-        self.id = ChainUtil.id(),
+        self.id = WalletUtil.id(),
         self.input = None,
         self.outputs = None
 
     @staticmethod
-    def create_transaction(sender_wallet, recipient, amount):
+    def new_transaction(sender_wallet, recipient, amount):
         """
         Create a new transaction
         """
@@ -59,8 +59,8 @@ class Transaction:
         """
         Deserializes public keys and verifies transaction signature
         """
-        return ChainUtil.verify_signature(
-            ChainUtil.deserialize_public_key(transaction.input['address']),
+        return WalletUtil.verify_signature(
+            WalletUtil.deserialize_public_key(transaction.input['address']),
             transaction.input['signature'],
             transaction.outputs,
         )
@@ -103,6 +103,9 @@ class Transaction:
 
     @staticmethod
     def reward_transaction(miner_wallet):
+        """
+        Creates a mining reward transaction
+        """
         transaction = Transaction()
         transaction.input = {
             'address': MINING_REWARD_INPUT

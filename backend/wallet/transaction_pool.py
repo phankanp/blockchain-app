@@ -1,11 +1,8 @@
-from backend.wallet.transaction import Transaction
-from backend.config import MINING_REWARD, MINING_REWARD_INPUT
-
-
 class TransactionPool:
     """
     Class represents a collection of transactions
     """
+
     def __init__(self):
         self.transactions = {}
 
@@ -21,6 +18,13 @@ class TransactionPool:
             if transaction.input['address'] == address:
                 return transaction
 
+    def get_transactions(self):
+        transactions = []
+
+        for transaction in self.transactions:
+            transactions.append(transaction.to_json())
+
+        return transactions
 
     def clear_transaction(self):
         """

@@ -7,9 +7,14 @@ from pusher import Pusher
 
 from backend.blockchain.block import Block
 from backend.blockchain.blockchain import Blockchain
+from backend.wallet.transaction import Transaction
+from backend.wallet.transaction_pool import TransactionPool
+from backend.wallet.wallet import Wallet
 
 app = Flask(__name__)
 blockchain = Blockchain()
+wallet = Wallet()
+transaction_pool = TransactionPool()
 
 pusher = Pusher(
     app_id="1030757",
@@ -22,7 +27,7 @@ pusher = Pusher(
 
 @app.route('/')
 def route_default():
-    return 'Welcome to the blockchain!'
+    return 'Py-blockchain!'
 
 
 @app.route('/blockchain')
@@ -32,7 +37,8 @@ def route_blockchain():
 
 @app.route('/blockchain/mine')
 def route_blockchain_mine():
-    data = 'Test transaction data'
+    data = transaction_pool.get_transactions()
+    data.append(Transaction.reward_transaction(wallet).to_json())
 
     blockchain.add_block(data)
 
@@ -51,8 +57,6 @@ def route_blockchain_replace():
     new_blockchain = blockchain.chain[:]
     new_blockchain.append(block)
 
-    message = ''
-
     try:
         blockchain.replace_chain(new_blockchain)
         message = 'Replaced blockchain'
@@ -62,6 +66,31 @@ def route_blockchain_replace():
     response_data = {'message': message, 'code': 'SUCCESS'}
 
     return make_response(jsonify(response_data), 201)
+
+
+@app.route('/blockchain/length')
+def route_blockchain_length():
+    return jsonify(len(blockchain.chain))
+
+
+@app.route('/transaction/new', methods=['POST'])
+def route_create_transaction():
+    data = request.get_json()
+    transaction = wallet.create_transaction(blockchain, data['amount'], data['recipient'], transaction_pool)
+
+    pusher.trigger('blockchain', 'transaction-created', transaction.to_json())
+
+    return jsonify(transaction.to_json())
+
+
+@app.route('/transactions')
+def route_transactions():
+    return jsonify(transaction_pool.get_transactions())
+
+
+@app.route('/wallet/info')
+def route_wallet_info():
+    return jsonify({'public_key': wallet.public_key, 'balance': wallet.balance})
 
 
 ROOT_PORT = 5000

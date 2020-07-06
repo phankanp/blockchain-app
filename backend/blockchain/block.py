@@ -46,7 +46,9 @@ class Block:
 
         mined_block = Block(index, timestamp, previous_hash,
                             '', data, difficulty, nonce)
+
         hash = Block.proof_of_work(previous_block, mined_block)
+
         mined_block.hash = hash
 
         return mined_block

@@ -12,7 +12,7 @@ def test_transaction():
     recipient = 'recipient'
     amount = 50
 
-    transaction = Transaction().create_transaction(sender_wallet, recipient, amount)
+    transaction = Transaction().new_transaction(sender_wallet, recipient, amount)
 
     assert transaction.outputs['sender_amount'] == sender_wallet.balance - amount
     assert transaction.outputs['recipient_amount'] == amount
@@ -28,7 +28,7 @@ def test_invalid_transaction():
     recipient = 'recipient'
     amount = 50
 
-    transaction = Transaction().create_transaction(sender_wallet, recipient, amount)
+    transaction = Transaction().new_transaction(sender_wallet, recipient, amount)
 
     transaction.outputs['recipient_amount'] = 51
     assert Transaction.verify_transaction(transaction) is False
@@ -43,7 +43,7 @@ def test_invalid_balance():
     amount = 200
 
     with pytest.raises(Exception):
-        Transaction().create_transaction(sender_wallet, recipient, amount)
+        Transaction().new_transaction(sender_wallet, recipient, amount)
 
 
 def test_update_transaction_new_recipient():
@@ -54,7 +54,7 @@ def test_update_transaction_new_recipient():
     recipient = 'recipient'
     amount = 50
 
-    transaction = Transaction().create_transaction(sender_wallet, recipient, amount)
+    transaction = Transaction().new_transaction(sender_wallet, recipient, amount)
 
     new_amount = 30
     new_recipient = 'new-address'
@@ -74,7 +74,7 @@ def test_update_transaction_same_recipient():
     recipient = 'recipient'
     amount = 50
 
-    transaction = Transaction().create_transaction(sender_wallet, recipient, amount)
+    transaction = Transaction().new_transaction(sender_wallet, recipient, amount)
 
     new_amount = 30
     new_recipient = 'recipient'
