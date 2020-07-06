@@ -5,8 +5,8 @@ import requests
 from flask import Flask, jsonify, request, make_response
 from pusher import Pusher
 
-from backend.blockchain.Block import Block
-from backend.blockchain.Blockchain import Blockchain
+from backend.blockchain.block import Block
+from backend.blockchain.blockchain import Blockchain
 
 app = Flask(__name__)
 blockchain = Blockchain()

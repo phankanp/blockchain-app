@@ -1,5 +1,5 @@
-from backend.blockchain.Block import Block
-from backend.blockchain.Block import GENESIS_DATA
+from backend.blockchain.block import Block
+from backend.blockchain.block import GENESIS_DATA
 from backend.util.hex_to_binary import hex_to_binary
 
 

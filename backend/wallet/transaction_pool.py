@@ -1,9 +1,10 @@
 from backend.wallet.transaction import Transaction
+from backend.config import MINING_REWARD, MINING_REWARD_INPUT
 
 
 class TransactionPool:
     """
-    Class represents a collection of transactions 
+    Class represents a collection of transactions
     """
     def __init__(self):
         self.transactions = {}
@@ -20,22 +21,6 @@ class TransactionPool:
             if transaction.input['address'] == address:
                 return transaction
 
-    def valid_transactions(self):
-        """
-        Validates and returns transactions based on total input/output amounts and signatures
-        """
-        transactions = []
-
-        for transaction in self.transactions:
-            transaction_total = transaction['recipient_amount'] + ['sender_amount']
-
-            if transaction_total != transaction.input['amount']:
-                continue
-
-            if not Transaction.verify_transaction(transaction):
-                continue
-
-            transactions.append(transaction.to_json())
 
     def clear_transaction(self):
         """

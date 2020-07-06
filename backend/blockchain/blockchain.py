@@ -1,4 +1,4 @@
-from backend.blockchain.Block import Block
+from backend.blockchain.block import Block
 
 
 class Blockchain:
@@ -74,7 +74,7 @@ class Blockchain:
         """
         if len(chain) <= len(self.chain):
             raise Exception('Incoming chain must be longer than current chain')
-        elif Blockchain.is_valid_chain(chain) == False:
+        elif not Blockchain.is_valid_chain(chain):
             raise Exception('Incoming chain is invalid')
 
         self.chain = chain

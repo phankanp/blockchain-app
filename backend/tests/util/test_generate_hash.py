@@ -1,4 +1,4 @@
-from backend.blockchain.Block import Block
+from backend.blockchain.block import Block
 from backend.util.generate_hash import generate_hash
 
 

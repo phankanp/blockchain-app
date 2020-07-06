@@ -1,5 +1,6 @@
 import time
 
+from backend.config import MINING_REWARD, MINING_REWARD_INPUT
 from backend.util.chain_util import ChainUtil
 
 
@@ -64,6 +65,23 @@ class Transaction:
             transaction.outputs,
         )
 
+    @staticmethod
+    def valid_transactions(transaction):
+        """
+        Validates transaction based on total input/output amounts and signatures
+        """
+        if transaction.input['address'] == MINING_REWARD_INPUT:
+            if transaction.outputs['recipient_address'] != MINING_REWARD:
+                raise Exception('Invalid mining reward')
+
+        transaction_total = transaction['recipient_amount'] + ['sender_amount']
+
+        if transaction_total != transaction.input['amount']:
+            raise Exception('Invalid transaction total')
+
+        if not Transaction.verify_transaction(transaction):
+            raise Exception('Invalid signature')
+
     def update(self, sender_wallet, recipient, amount):
         """
         Updates transaction with new recipient or amount
@@ -82,6 +100,19 @@ class Transaction:
         Transaction.sign_transaction(self, sender_wallet)
 
         return self
+
+    @staticmethod
+    def reward_transaction(miner_wallet):
+        transaction = Transaction()
+        transaction.input = {
+            'address': MINING_REWARD_INPUT
+        }
+        transaction.outputs = {
+            'recipient_amount': MINING_REWARD,
+            'recipient_address': miner_wallet.public_key
+        }
+
+        return transaction
 
     def to_json(self):
         """

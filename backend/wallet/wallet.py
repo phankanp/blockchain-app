@@ -35,3 +35,4 @@ class Wallet:
             json.dumps(data).encode('utf-8'),
             ec.ECDSA(hashes.SHA256())
         )
+
