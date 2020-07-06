@@ -82,3 +82,9 @@ class Transaction:
         Transaction.sign_transaction(self, sender_wallet)
 
         return self
+
+    def to_json(self):
+        """
+        Serialize the transaction.
+        """
+        return self.__dict__
