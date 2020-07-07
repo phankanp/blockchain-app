@@ -21,7 +21,7 @@ class TransactionPool:
     def get_transactions(self):
         transactions = []
 
-        for transaction in self.transactions:
+        for transaction in self.transactions.values():
             transactions.append(transaction.to_json())
 
         return transactions

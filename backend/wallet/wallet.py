@@ -1,9 +1,4 @@
-import json
-
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import ec
-
-from backend.config import INITIAL_BALANCE
+from backend.config import INITIAL_BALANCE, MINING_REWARD_INPUT
 from backend.util.wallet_util import WalletUtil
 from backend.wallet.transaction import Transaction
 
@@ -26,15 +21,6 @@ class Wallet:
             'Wallet('
             f'balance: {self.balance}, '
             f'public_key: {str(self.public_key)})'
-        )
-
-    def sign(self, data):
-        """
-        Generates transaction signature
-        """
-        return self.key_pair.sign(
-            json.dumps(data).encode('utf-8'),
-            ec.ECDSA(hashes.SHA256())
         )
 
     def create_transaction(self, blockchain, amount, recipient, transaction_pool):
@@ -67,6 +53,7 @@ class Wallet:
 
         for block in blockchain.chain:
             for transaction in block.data:
+                transaction = Transaction.from_json(transaction)
                 transactions.append(transaction)
 
         for transaction in transactions:
@@ -76,18 +63,18 @@ class Wallet:
         start_time = 0
 
         if len(wallet_transactions) > 0:
-            latest_transaction = wallet_transactions[0].input['timestamp']
+            latest_transaction = wallet_transactions[0]
 
             for wallet_transaction in wallet_transactions:
-                if wallet_transaction.input['timestamp'] > latest_transaction:
-                    latest_transaction = wallet_transaction.input['timestamp']
+                if wallet_transaction.input['timestamp'] > latest_transaction.input['timestamp']:
+                    latest_transaction = wallet_transaction
 
             balance = latest_transaction.outputs['sender_amount']
 
             start_time = latest_transaction.input['timestamp']
 
         for transaction in transactions:
-            if transaction.input['timestamp'] > start_time:
+            if transaction.input['address'] == MINING_REWARD_INPUT or transaction.input['timestamp'] > start_time:
                 if transaction.outputs['recipient_address'] == self.public_key:
                     balance += transaction.outputs['recipient_amount']
 
