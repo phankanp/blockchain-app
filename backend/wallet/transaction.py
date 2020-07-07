@@ -6,10 +6,10 @@ from backend.util.wallet_util import WalletUtil
 
 class Transaction:
 
-    def __init__(self):
-        self.id = WalletUtil.id(),
-        self.input = None,
-        self.outputs = None
+    def __init__(self, id=None, input=None, outputs=None):
+        self.id = id or WalletUtil.id(),
+        self.input = input or None,
+        self.outputs = outputs or None
 
     @staticmethod
     def new_transaction(sender_wallet, recipient, amount):
@@ -51,7 +51,7 @@ class Transaction:
             'timestamp': time.time_ns(),
             'amount': sender_wallet.balance,
             'address': sender_wallet.public_key,
-            'signature': sender_wallet.sign(transaction.outputs)
+            'signature': WalletUtil.sign(sender_wallet.key_pair, transaction.outputs)
         }
 
     @staticmethod
@@ -122,3 +122,19 @@ class Transaction:
         Serialize the transaction.
         """
         return self.__dict__
+
+    @staticmethod
+    def from_json(transaction_json):
+        """
+        Deserialize json into a transaction instance.
+        """
+        transaction_dict = {}
+
+        for k, v in transaction_json.items():
+            transaction_dict[k] = v
+
+        transaction = Transaction(**transaction_dict)
+
+        transaction.input = transaction.input[0]
+
+        return transaction
