@@ -1,14 +1,9 @@
 import json
 import uuid
 
-from cryptography.exceptions import InvalidSignature
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import ec
-from cryptography.hazmat.primitives.asymmetric.utils import (
-    encode_dss_signature,
-    decode_dss_signature
-)
+from ellipticcurve.ecdsa import Ecdsa
+from ellipticcurve.privateKey import PrivateKey
+from ellipticcurve.publicKey import PublicKey
 
 
 class WalletUtil:
@@ -18,32 +13,23 @@ class WalletUtil:
         """
         Generates private key using provided cryptography standard and backend
         """
-        return ec.generate_private_key(
-            ec.SECP256K1(),
-            default_backend()
-        )
+        private_key = PrivateKey()
+
+        return private_key
 
     @staticmethod
     def serialize_public_key(public_key):
         """
         Serializes public key
         """
-        return public_key.public_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PublicFormat.SubjectPublicKeyInfo
-        ).decode('utf-8')
+        return PublicKey.toPem(public_key)
 
     @staticmethod
     def deserialize_public_key(public_key):
         """
         Deserializes public key
         """
-        deserialized_public_key = serialization.load_pem_public_key(
-            public_key.encode('utf-8'),
-            default_backend()
-        )
-
-        return deserialized_public_key
+        return PublicKey.fromPem(public_key)
 
     @staticmethod
     def id():
@@ -57,22 +43,20 @@ class WalletUtil:
         """
         Generates transaction signature
         """
-        return decode_dss_signature(key_pair.sign(
-            json.dumps(data).encode('utf-8'),
-            ec.ECDSA(hashes.SHA256())
-        ))
+        message = json.dumps(data)
+        signature = Ecdsa.sign(message, key_pair)
+
+        return signature.toBase64()
 
     @staticmethod
     def verify_signature(public_key, signature, data):
         """
         Verifies transaction signature
         """
+        message = json.dumps(data)
+
         try:
-            public_key.verify(
-                encode_dss_signature(signature),
-                json.dumps(data).encode('utf-8'),
-                ec.ECDSA(hashes.SHA256())
-            )
+            Ecdsa.verify(message, signature, public_key)
             return True
-        except InvalidSignature:
+        except Exception as e:
             return False

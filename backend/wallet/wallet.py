@@ -11,7 +11,7 @@ class Wallet:
     def __init__(self):
         self.balance = INITIAL_BALANCE
         self.key_pair = WalletUtil.generate_keypair()
-        self.public_key = WalletUtil.serialize_public_key(self.key_pair.public_key())
+        self.public_key = WalletUtil.serialize_public_key(self.key_pair.publicKey())
 
     def __repr__(self):
         """

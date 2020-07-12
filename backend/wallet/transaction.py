@@ -66,7 +66,7 @@ class Transaction:
         )
 
     @staticmethod
-    def valid_transactions(transaction):
+    def valid_transaction(transaction):
         """
         Validates transaction based on total input/output amounts and signatures
         """

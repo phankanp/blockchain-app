@@ -17,6 +17,7 @@ class Blockchain:
         """
         Add block to chain list
         """
+
         self.chain.append(Block.mine_block(self.chain[-1], data))
 
     def __repr__(self):

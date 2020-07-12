@@ -40,6 +40,7 @@ def route_blockchain():
 @app.route('/blockchain/mine')
 def route_blockchain_mine():
     data = transaction_pool.get_transactions()
+
     data.append(Transaction.reward_transaction(wallet).to_json())
 
     blockchain.add_block(data)
@@ -78,6 +79,7 @@ def route_blockchain_length():
 @app.route('/transaction/new', methods=['POST'])
 def route_create_transaction():
     data = request.get_json()
+
     transaction = wallet.create_transaction(blockchain, data['amount'], data['recipient'], transaction_pool)
 
     pusher.trigger('blockchain', 'transaction-created', transaction.to_json())
