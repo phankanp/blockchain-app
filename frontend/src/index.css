@@ -5,12 +5,16 @@ html, body {
     sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
 }
 
 html, body, #root > div {
     height: 100%;
     background: #F0F2F4;
-    padding-bottom: 10%;
+}
+
+#root > div > div > .is-fullheight {
+    min-height: 100vh;
 }
 
 code {
@@ -18,7 +22,7 @@ code {
     monospace;
 }
 
-#root > div > div > div > div > div > div > header {
+#root > div > div > div > div > div > div > div > header {
     background-color: mediumpurple;
 }
 
