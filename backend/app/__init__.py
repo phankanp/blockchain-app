@@ -4,6 +4,7 @@ import random
 import requests
 from decouple import config
 from flask import Flask, jsonify, request, make_response
+from flask_cors import CORS
 from pusher import Pusher
 
 from backend.blockchain.block import Block
@@ -13,6 +14,8 @@ from backend.wallet.transaction_pool import TransactionPool
 from backend.wallet.wallet import Wallet
 
 app = Flask(__name__)
+
+CORS(app, resources={r'/*': {'origins': 'http://localhost:3000'}})
 
 pusher = Pusher(
     app_id=config('APP_ID'),
@@ -111,5 +114,13 @@ if os.environ.get('PEER') == 'True':
         print('Synchronized the local blockchain')
     except Exception as e:
         print(f'Synchronization error: {e}')
+
+
+for i in range(10):
+    blockchain.add_block([
+        Transaction.new_transaction(Wallet(), Wallet().public_key, random.randrange(10, 40, 10)).to_json(),
+        Transaction.new_transaction(Wallet(), Wallet().public_key, random.randrange(10, 40, 10)).to_json()
+    ])
+
 
 app.run(port=PORT)

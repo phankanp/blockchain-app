@@ -112,7 +112,9 @@ class Transaction:
         }
         transaction.outputs = {
             'recipient_amount': MINING_REWARD,
-            'recipient_address': miner_wallet.public_key
+            'recipient_address': miner_wallet.public_key,
+            'sender_amount': MINING_REWARD,
+            'sender_address': MINING_REWARD_INPUT
         }
 
         return transaction
