@@ -13,7 +13,7 @@ function Home() {
             .then(json => setWalletInfo(json))
     }, [])
 
-    const { public_key, balance } = walletInfo;
+    const { wallet_address, balance } = walletInfo;
 
     return (
         <div className="Home">
@@ -26,7 +26,7 @@ function Home() {
                         <h1 className="title is-2 has-text-white">PY Blockchain</h1>
                         <div className="columns">
                             <div className="column">
-                                <div>Wallet: {String(public_key).substring(57,67)}...</div>
+                                <div>Wallet: {wallet_address}</div>
                             </div>
                         </div>
                         <div className="columns">

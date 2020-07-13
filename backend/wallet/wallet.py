@@ -12,6 +12,7 @@ class Wallet:
         self.balance = INITIAL_BALANCE
         self.key_pair = WalletUtil.generate_keypair()
         self.public_key = WalletUtil.serialize_public_key(self.key_pair.publicKey())
+        self.address = WalletUtil.generate_wallet_address(self.public_key)
 
     def __repr__(self):
         """
@@ -20,7 +21,7 @@ class Wallet:
         return (
             'Wallet('
             f'balance: {self.balance}, '
-            f'public_key: {str(self.public_key)})'
+            f'address: {self.address})'
         )
 
     def create_transaction(self, blockchain, amount, recipient, transaction_pool):
@@ -32,7 +33,7 @@ class Wallet:
         if amount > self.balance:
             raise Exception(f'{amount} exceeds current balance: {self.balance}')
 
-        transaction = transaction_pool.existing_transaction(self.public_key)
+        transaction = transaction_pool.existing_transaction(self.address)
 
         if transaction:
             transaction.update(self, recipient, amount)
@@ -57,7 +58,7 @@ class Wallet:
                 transactions.append(transaction)
 
         for transaction in transactions:
-            if transaction.input['address'] == self.public_key:
+            if transaction.input['address'] == self.address:
                 wallet_transactions.append(transaction)
 
         start_time = 0
@@ -75,7 +76,7 @@ class Wallet:
 
         for transaction in transactions:
             if transaction.input['address'] == MINING_REWARD_INPUT or transaction.input['timestamp'] > start_time:
-                if transaction.outputs['recipient_address'] == self.public_key:
+                if transaction.outputs['recipient_address'] == self.address:
                     balance += transaction.outputs['recipient_amount']
 
         return balance

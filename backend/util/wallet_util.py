@@ -1,5 +1,6 @@
 import json
 import uuid
+import hashlib
 
 from ellipticcurve.ecdsa import Ecdsa
 from ellipticcurve.privateKey import PrivateKey
@@ -7,6 +8,24 @@ from ellipticcurve.publicKey import PublicKey
 
 
 class WalletUtil:
+
+    @staticmethod
+    def id():
+        """
+        Generates unique id for transactions
+        """
+        return str(uuid.uuid4())
+
+    @staticmethod
+    def generate_wallet_address(public_key):
+        """
+        Generates a wallet's address from public key
+        :param public_key:
+        :return:
+        """
+        address = (hashlib.sha256(PublicKey.fromPem(public_key).toDer().encode()).hexdigest())[0:8]
+
+        return address
 
     @staticmethod
     def generate_keypair():
@@ -30,13 +49,6 @@ class WalletUtil:
         Deserializes public key
         """
         return PublicKey.fromPem(public_key)
-
-    @staticmethod
-    def id():
-        """
-        Generates unique id for transactions
-        """
-        return str(uuid.uuid4())
 
     @staticmethod
     def sign(key_pair, data):

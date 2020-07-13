@@ -25,7 +25,7 @@ class Transaction:
                 'recipient_amount': amount,
                 'recipient_address': recipient,
                 'sender_amount': sender_wallet.balance - amount,
-                'sender_address': sender_wallet.public_key
+                'sender_address': sender_wallet.address
             }
         )
 
@@ -50,7 +50,8 @@ class Transaction:
         transaction.input = {
             'timestamp': time.time_ns(),
             'amount': sender_wallet.balance,
-            'address': sender_wallet.public_key,
+            'address': sender_wallet.address,
+            'public_key': sender_wallet.public_key,
             'signature': WalletUtil.sign(sender_wallet.key_pair, transaction.outputs)
         }
 
@@ -60,7 +61,7 @@ class Transaction:
         Deserializes public keys and verifies transaction signature
         """
         return WalletUtil.verify_signature(
-            WalletUtil.deserialize_public_key(transaction.input['address']),
+            WalletUtil.deserialize_public_key(transaction.input['public_key']),
             transaction.input['signature'],
             transaction.outputs,
         )
@@ -112,7 +113,7 @@ class Transaction:
         }
         transaction.outputs = {
             'recipient_amount': MINING_REWARD,
-            'recipient_address': miner_wallet.public_key,
+            'recipient_address': miner_wallet.address,
             'sender_amount': MINING_REWARD,
             'sender_address': MINING_REWARD_INPUT
         }

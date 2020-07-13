@@ -97,7 +97,7 @@ def route_transactions():
 
 @app.route('/wallet/info')
 def route_wallet_info():
-    return jsonify({'public_key': wallet.public_key, 'balance': wallet.balance})
+    return jsonify({'wallet_address': wallet.address, 'balance': wallet.balance})
 
 
 ROOT_PORT = 5000
@@ -118,8 +118,8 @@ if os.environ.get('PEER') == 'True':
 
 for i in range(10):
     blockchain.add_block([
-        Transaction.new_transaction(Wallet(), Wallet().public_key, random.randrange(10, 40, 10)).to_json(),
-        Transaction.new_transaction(Wallet(), Wallet().public_key, random.randrange(10, 40, 10)).to_json()
+        Transaction.new_transaction(Wallet(), Wallet().address, random.randrange(10, 40, 10)).to_json(),
+        Transaction.new_transaction(Wallet(), Wallet().address, random.randrange(10, 40, 10)).to_json()
     ])
 
 

@@ -4,16 +4,6 @@ from backend.config import MINE_RATE, DIFFICULTY
 from backend.util.generate_hash import generate_hash
 from backend.util.hex_to_binary import hex_to_binary
 
-GENESIS_DATA = {
-    'index': 0,
-    'timestamp': 1,
-    'previous_hash': 'genesis_last_hash',
-    'hash': 'genesis_hash',
-    'data': [],
-    'difficulty': DIFFICULTY,
-    'nonce': 'genesis_nonce'
-}
-
 
 class Block:
     """
@@ -105,7 +95,7 @@ class Block:
         """
         Return first block (genesis block) of chain
         """
-        return Block(**GENESIS_DATA)
+        return Block(0, 1, 'genesis_last_hash', 'genesis_hash', [], DIFFICULTY, 'genesis_nonce')
 
     def __repr__(self):
         """
