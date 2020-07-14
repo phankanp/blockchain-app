@@ -50,6 +50,8 @@ def route_blockchain_mine():
 
     block = blockchain.chain[-1]
 
+    transaction_pool.clear_transaction()
+
     pusher.trigger('blockchain', 'block-added', block.to_json())
 
     return jsonify(block.to_json())
@@ -84,10 +86,22 @@ def route_create_transaction():
     data = request.get_json()
 
     transaction = wallet.create_transaction(blockchain, data['amount'], data['recipient'], transaction_pool)
+    transaction.id = transaction.id[0]
 
     pusher.trigger('blockchain', 'transaction-created', transaction.to_json())
 
     return jsonify(transaction.to_json())
+
+
+@app.route('/transaction/add', methods=['POST'])
+def route_add_to_transaction_pool():
+    data = request.get_json()
+
+    transaction_pool.add_transaction(Transaction.from_json(data))
+
+    response_data = {'message': 'Transaction added to pool', 'code': 'SUCCESS'}
+
+    return make_response(jsonify(response_data), 201)
 
 
 @app.route('/transactions')
@@ -121,6 +135,11 @@ for i in range(10):
         Transaction.new_transaction(Wallet(), Wallet().address, random.randrange(10, 40, 10)).to_json(),
         Transaction.new_transaction(Wallet(), Wallet().address, random.randrange(10, 40, 10)).to_json()
     ])
+
+for i in range(5):
+    transaction_pool.add_transaction(
+        Transaction.new_transaction(Wallet(), Wallet().address, random.randrange(10, 40, 10))
+    )
 
 
 app.run(port=PORT)
