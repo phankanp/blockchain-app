@@ -1,8 +1,9 @@
 import React, {useState} from "react";
-
 import {API_BASE_URL} from "../config";
+import {Link, useHistory} from "react-router-dom";
+
 import Banner from "./Banner";
-import {Link} from "react-router-dom";
+
 
 function CreateTransaction() {
     const [amount, setAmount] = useState(0)
@@ -16,6 +17,8 @@ function CreateTransaction() {
         setAmount(Number(event.target.value))
     }
 
+    let history = useHistory();
+
     const submitTransaction = () => {
         fetch(`${API_BASE_URL}/transaction/new`,
             {
@@ -24,7 +27,8 @@ function CreateTransaction() {
                 body: JSON.stringify({recipient, amount})
             }).then(response => response.json())
             .then(json => {
-                alert('Success!')
+                alert('Successfully created a transaction!')
+                history.push('/transaction-pool')
             })
     }
 

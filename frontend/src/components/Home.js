@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
-import logo from "../assets/buy-sell-coin.png";
 import {Link} from "react-router-dom";
 import {API_BASE_URL} from "../config";
 
+import logo from "../assets/buy-sell-coin.png";
 
 function Home() {
     const [walletInfo, setWalletInfo] = useState({})
@@ -42,6 +42,11 @@ function Home() {
                         <div className="columns">
                             <div className="column">
                                 <Link className="button is-danger" to="/create-transaction">Create Transaction</Link>
+                            </div>
+                        </div>
+                        <div className="columns">
+                            <div className="column">
+                                <Link className="button is-danger" to="/transaction-pool">Transaction Pool</Link>
                             </div>
                         </div>
                     </div>

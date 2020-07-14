@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {API_BASE_URL} from "../config";
+import {Link} from "react-router-dom";
+
 import Block from "./Block";
 import Pagination from "./Pagination";
+import Banner from "./Banner";
 
 import coin from '../assets/coin.png'
-import {Link} from "react-router-dom";
-import Banner from "./Banner";
 
 
 function Blockchain() {
@@ -38,6 +39,7 @@ function Blockchain() {
                     </div>
                 </div>
                 <hr/>
+                <h3 className="title is-2 has-text-centered">Blockchain</h3>
                 <div>{currentBlocks.map(block =>
                     <div className="columns is-mobile is-centered">
                         <div className="column is-5">

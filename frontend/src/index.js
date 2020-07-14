@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Route, BrowserRouter, Switch} from "react-router-dom";
-import {createBrowserHistory} from "history";
+import {BrowserRouter} from "react-router-dom";
 import './index.css';
-import App from './components/App';
-
 import 'react-bulma-components/dist/react-bulma-components.min.css';
 
+import App from './components/App';
+
+
 ReactDOM.render(
-    <BrowserRouter history={createBrowserHistory()}>
+    <BrowserRouter>
         <App />
     </BrowserRouter>,
     document.getElementById('root')

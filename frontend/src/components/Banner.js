@@ -9,7 +9,6 @@ function Banner() {
                     <figure className="image is-128x128 is-inline-block">
                         <img className="" src={logo} alt="logo"/>
                     </figure>
-                    <h1 className="title is-2 has-text-white">PY Blockchain</h1>
                 </div>
             </div>
         </section>
