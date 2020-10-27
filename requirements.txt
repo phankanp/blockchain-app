@@ -5,7 +5,7 @@ flask==1.1.2
 pusher==3.0.0
 autopep8==1.5.3
 requests==2.24.0
-cryptography==2.9.2
+cryptography==3.2
 python-decouple==3.3.0
 starkbank-ecdsa==1.0.0
 Flask-Cors==3.0.8
